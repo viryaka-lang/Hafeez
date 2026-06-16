@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>حفيظ - تطبيق حفظ النصوص العربية</title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#080b11">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="حفيظ">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <!-- Google Fonts: Amiri for classical text, Tajawal for UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="glow-container">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <header class="app-header">
+        <div class="header-content container">
+            <div class="logo">
+                <i class="fa-solid fa-book-quran logo-icon"></i>
+                <span class="logo-text">حَفِيظْ</span>
+            </div>
+            <div class="tagline">رفيقك الذكي لحفظ وتثبيت النصوص العربية بالرسم والتشكيل</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- STEP 1: Text Input & Setup -->
+        <section id="setup-section" class="glass-card fade-in">
+            <div class="card-header">
+                <h2><i class="fa-solid fa-pen-nib gold-text"></i> أدخل النص المراد حفظه</h2>
+                <p class="subtitle">اكتب نصاً، أو الصقه، أو اختر من المكتبة الجاهزة أدناه لتبدأ رحلة الحفظ</p>
+            </div>
+            
+            <div class="input-area-wrapper">
+                <textarea id="text-input" placeholder="اكتب أو الصق النص هنا... (يدعم التشكيل وعلامات الترقيم)" dir="rtl"></textarea>
+                <div class="text-stats">
+                    <span id="char-count">0 حرف</span> • 
+                    <span id="word-count">0 كلمة</span> • 
+                    <span id="line-count">0 سطر</span>
+                </div>
+            </div>
+
+            <!-- Presets Section -->
+            <div class="presets-section">
+                <h3><i class="fa-solid fa-compass gold-text"></i> نصوص مقترحة للمحافظة</h3>
+                <div class="presets-grid">
+                    <button class="preset-btn" data-preset="fatiha">
+                        <span class="preset-title">سورة الفاتحة</span>
+                        <span class="preset-meta">قرآن كريم • 7 آيات</span>
+                    </button>
+                    <button class="preset-btn" data-preset="ikhlas">
+                        <span class="preset-title">سورة الإخلاص والمعوذتان</span>
+                        <span class="preset-meta">قرآن كريم • قصار السور</span>
+                    </button>
+                    <button class="preset-btn" data-preset="mutanabbi">
+                        <span class="preset-title">من شعر المتنبي</span>
+                        <span class="preset-meta">شعر عباسي • في الحكمة</span>
+                    </button>
+                    <button class="preset-btn" data-preset="wardi">
+                        <span class="preset-title">لامية ابن الوردي</span>
+                        <span class="preset-meta">نصائح وحكم • أبيات مختارة</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <button id="start-btn" class="btn btn-primary btn-glow">
+                    <span>ابدأ الحفظ الآن</span>
+                    <i class="fa-solid fa-play"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- STEP 2: Memorization Workspace (Hidden by default) -->
+        <section id="workspace-section" class="glass-card fade-in hidden">
+            <div class="workspace-header">
+                <button id="back-btn" class="btn btn-secondary btn-sm">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>تغيير النص</span>
+                </button>
+                <div class="workspace-title-container">
+                    <h2 id="workspace-title">لوحة الحفظ والتثبيت</h2>
+                </div>
+                <!-- Audio Controls -->
+                <div class="audio-controls-wrapper">
+                    <button id="tts-btn" class="btn btn-audio" title="تلقين صوتي (استماع)">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span>استمع للنص</span>
+                    </button>
+                    <select id="voice-select" class="voice-dropdown" title="اختر الصوت"></select>
+                </div>
+            </div>
+
+            <!-- Splitter & Chunk Navigator -->
+            <div class="chunk-navigator-wrapper">
+                <div class="chunk-info">
+                    <span>تجزئة النص:</span>
+                    <div class="chunk-modes">
+                        <button id="chunk-mode-all" class="chunk-mode-btn active">النص كاملاً</button>
+                        <button id="chunk-mode-split" class="chunk-mode-btn">سطر بسطر</button>
+                    </div>
+                </div>
+                <div id="chunk-controls" class="chunk-controls hidden">
+                    <button id="prev-chunk-btn" class="btn btn-icon" title="السطر السابق"><i class="fa-solid fa-chevron-right"></i></button>
+                    <span id="chunk-indicator">السطر 1 من 5</span>
+                    <button id="next-chunk-btn" class="btn btn-icon" title="السطر التالي"><i class="fa-solid fa-chevron-left"></i></button>
+                </div>
+            </div>
+
+            <!-- Memorization Techniques Tabs -->
+            <div class="techniques-tabs">
+                <button class="tab-btn active" data-tab="read">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>1. القراءة والاستماع</span>
+                </button>
+                <button class="tab-btn" data-tab="erasure">
+                    <i class="fa-solid fa-eraser"></i>
+                    <span>2. المحو التدريجي</span>
+                </button>
+                <button class="tab-btn" data-tab="first-letter">
+                    <i class="fa-solid fa-font"></i>
+                    <span>3. الترميز (الحرف الأول)</span>
+                </button>
+                <button class="tab-btn" data-tab="typing">
+                    <i class="fa-solid fa-keyboard"></i>
+                    <span>4. الكتابة الغيبية</span>
+                </button>
+            </div>
+
+            <!-- Active Technique Control Panel -->
+            <div id="technique-controls" class="technique-controls-panel">
+                <!-- Read controls (none needed or simple audio speed) -->
+                <div id="ctrl-read" class="ctrl-subpanel">
+                    <p class="panel-desc">اقرأ النص بتمعن، واستمع إلى مخارج الحروف لتثبيت النطق الصحيح. يمكنك الضغط على أي كلمة للاستماع إليها بمفردها.</p>
+                </div>
+
+                <!-- Erasure controls -->
+                <div id="ctrl-erasure" class="ctrl-subpanel hidden">
+                    <div class="slider-control">
+                        <label for="erasure-slider">نسبة إخفاء الكلمات: <span id="erasure-percentage" class="gold-text font-bold">0%</span></label>
+                        <input type="range" id="erasure-slider" min="0" max="100" step="10" value="0">
+                    </div>
+                    <div class="helper-btns">
+                        <button id="hide-more-btn" class="btn btn-secondary btn-xs"><i class="fa-solid fa-plus"></i> إخفاء المزيد</button>
+                        <button id="reveal-all-btn" class="btn btn-secondary btn-xs"><i class="fa-solid fa-rotate-left"></i> إظهار الكل</button>
+                    </div>
+                    <p class="panel-desc">اسحب المؤشر لإخفاء الكلمات تدريجياً، أو اضغط مباشرة على أي كلمة لإخفائها أو إظهارها بمفردها.</p>
+                </div>
+
+                <!-- First Letter controls -->
+                <div id="ctrl-first-letter" class="ctrl-subpanel hidden">
+                    <div class="toggle-control">
+                        <span class="toggle-label">نوع المساعدة:</span>
+                        <div class="toggle-group">
+                            <button id="fl-dots-btn" class="toggle-btn active">نقاط تشير للحجم (أ...)</button>
+                            <button id="fl-blank-btn" class="toggle-btn">أول حرف فقط (أ)</button>
+                        </div>
+                    </div>
+                    <p class="panel-desc">يعرض هذا الوضع الحرف الأول فقط من كل كلمة كمفتاح بصري يحفز الذاكرة لاستدعاء بقية الكلمة.</p>
+                </div>
+
+                <!-- Typing controls -->
+                <div id="ctrl-typing" class="ctrl-subpanel hidden">
+                    <div class="typing-stats-row">
+                        <div class="typing-stat">
+                            <span class="stat-label">نسبة الإنجاز</span>
+                            <span id="typing-progress-pct" class="stat-value gold-text">0%</span>
+                        </div>
+                        <div class="typing-stat">
+                            <span class="stat-label">الأخطاء</span>
+                            <span id="typing-errors" class="stat-value red-text">0</span>
+                        </div>
+                        <div class="typing-stat">
+                            <span class="stat-label">السرعة</span>
+                            <span id="typing-wpm" class="stat-value">0 ك/د</span>
+                        </div>
+                        <button id="reset-typing-btn" class="btn btn-secondary btn-xs" title="إعادة تشغيل الاختبار">
+                            <i class="fa-solid fa-arrow-rotate-right"></i>
+                            <span>إعادة</span>
+                        </button>
+                    </div>
+                    <p class="panel-desc">ابدأ الكتابة في الحقل أدناه غيباً. ستظهر الأحرف الصحيحة باللون الأخضر فور كتابتها. التطبيق يتغاضى ذكياً عن فروق التشكيل والهمزات لتسهيل الكتابة.</p>
+                </div>
+            </div>
+
+            <!-- Workspace Text Display -->
+            <div class="text-display-container">
+                <div id="text-display" class="arabic-text-display amiri-font" dir="rtl">
+                    <!-- Dynamic text goes here -->
+                </div>
+                
+                <!-- Typing Input Box (Visible only in Typing mode) -->
+                <div id="typing-input-wrapper" class="typing-input-wrapper hidden">
+                    <input type="text" id="typing-input" autocomplete="off" spellcheck="false" placeholder="ابدأ بالكتابة غيباً هنا..." dir="rtl">
+                    <div class="typing-hint">
+                        <span>الحرف التالي المطلوب:</span>
+                        <span id="next-char-hint" class="gold-text font-bold">ـ</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Celebration Overlay -->
+            <div id="celebration-card" class="celebration-card hidden">
+                <div class="celebration-content">
+                    <i class="fa-solid fa-trophy trophy-icon"></i>
+                    <h3>مبارك! لقد أتممت الحفظ</h3>
+                    <p>لقد قمت بتكرار وتثبيت النص بنجاح تام.</p>
+                    <div class="celebration-actions">
+                        <button id="celebrate-close" class="btn btn-primary">متابعة الحفظ</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-content container">
+            <p>© 2026 حفيظ - شُيّد بأحدث تقنيات ترسيخ الذاكرة للنصوص العربية.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
