@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>حفيظ - تطبيق حفظ النصوص العربية</title>
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#080b11">
@@ -198,6 +198,13 @@
 
             <!-- Workspace Text Display -->
             <div class="text-display-container">
+                <!-- Font Size Controller -->
+                <div class="font-size-controller">
+                    <button id="decrease-font-btn" class="btn-font-size" title="تصغير الخط"><i class="fa-solid fa-minus"></i></button>
+                    <span class="font-size-label"><i class="fa-solid fa-font"></i></span>
+                    <button id="increase-font-btn" class="btn-font-size" title="تكبير الخط"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                
                 <div id="text-display" class="arabic-text-display amiri-font" dir="rtl">
                     <!-- Dynamic text goes here -->
                 </div>

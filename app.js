@@ -63,7 +63,10 @@ let state = {
     synth: window.speechSynthesis,
     activeUtterance: null,
     isPlayingAudio: false,
-    arabicVoices: []
+    arabicVoices: [],
+
+    // Font Size State
+    fontSize: getSavedFontSize()
 };
 
 // DOM Elements
@@ -122,13 +125,16 @@ const elements = {
     // Workspace displays
     textDisplay: document.getElementById('text-display'),
     celebrationCard: document.getElementById('celebration-card'),
-    celebrateClose: document.getElementById('celebrate-close')
+    celebrateClose: document.getElementById('celebrate-close'),
+    decreaseFontBtn: document.getElementById('decrease-font-btn'),
+    increaseFontBtn: document.getElementById('increase-font-btn')
 };
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     initVoices();
     setupEventListeners();
+    initFontSizeControls();
     updateTextStats();
     registerServiceWorker();
 });
@@ -250,6 +256,50 @@ function setupEventListeners() {
 
     // Handle voice select change to stop any active speaking
     elements.voiceSelect.addEventListener('change', stopAudio);
+}
+
+// --- Font Size Sizing & Persistent Controls ---
+
+function getSavedFontSize() {
+    const saved = localStorage.getItem('hafeez-font-size');
+    if (saved) return saved;
+    // Default based on mobile breakpoint (768px)
+    return window.innerWidth <= 768 ? '1.95rem' : '2.1rem';
+}
+
+function applyFontSize() {
+    if (elements.textDisplay) {
+        elements.textDisplay.style.fontSize = state.fontSize;
+    }
+    
+    // Proportional scaling for typing input field (typically 0.67 of text display size)
+    if (elements.typingInput) {
+        const numSize = parseFloat(state.fontSize);
+        elements.typingInput.style.fontSize = (numSize * 0.67).toFixed(2) + 'rem';
+    }
+}
+
+function initFontSizeControls() {
+    if (elements.decreaseFontBtn && elements.increaseFontBtn) {
+        elements.decreaseFontBtn.addEventListener('click', () => {
+            adjustFontSize(-0.15);
+        });
+        elements.increaseFontBtn.addEventListener('click', () => {
+            adjustFontSize(0.15);
+        });
+    }
+    // Apply loaded or default size on startup
+    applyFontSize();
+}
+
+function adjustFontSize(delta) {
+    let current = parseFloat(state.fontSize);
+    let updated = current + delta;
+    // Bound the font size between 1.35rem and 3.1rem
+    updated = Math.max(1.35, Math.min(3.1, updated));
+    state.fontSize = updated.toFixed(2) + 'rem';
+    localStorage.setItem('hafeez-font-size', state.fontSize);
+    applyFontSize();
 }
 
 // --- Text Processing Helpers ---

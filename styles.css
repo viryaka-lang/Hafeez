@@ -690,6 +690,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     text-align: center;
     word-spacing: 4px;
     transition: opacity 0.3s ease;
+    margin-top: 24px; /* clearance for font size controller */
 }
 
 /* Individual Words Styling */
@@ -723,7 +724,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    font-size: 1.3rem;
+    font-size: 0.6em; /* scale dynamically with parent font-size */
     letter-spacing: 2px;
     pointer-events: none;
     text-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
@@ -804,6 +805,52 @@ input[type="range"]::-webkit-slider-thumb:hover {
 #typing-input:focus {
     border-color: var(--card-border-focus);
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+}
+
+/* Font Size Controller */
+.font-size-controller {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 3px 6px;
+    z-index: 5;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.btn-font-size {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-font-size:hover {
+    color: var(--accent-gold);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.font-size-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #typing-input.typo-shake {
@@ -934,6 +981,25 @@ input[type="range"]::-webkit-slider-thumb:hover {
         font-size: 2rem;
     }
 
+    .card-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .card-header {
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+    }
+
+    .presets-section h3 {
+        font-size: 1.05rem;
+    }
+
+    textarea#text-input {
+        font-size: 1.5rem;
+        height: 160px;
+        padding: 16px;
+    }
+
     .techniques-tabs {
         grid-template-columns: repeat(2, 1fr);
         gap: 4px;
@@ -944,9 +1010,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
         font-size: 0.85rem;
     }
 
+    .text-display-container {
+        padding: 24px 20px;
+    }
+
     .arabic-text-display {
-        font-size: 1.7rem;
+        font-size: 1.95rem; /* Increased default size for better mobile readability */
         line-height: 2.2;
+        margin-top: 20px;
+    }
+
+    #next-char-hint {
+        font-size: 1.35rem; /* Larger hint on mobile */
     }
 
     .workspace-header {
